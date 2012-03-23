@@ -1,0 +1,2 @@
+a simple linked list implementation, from my "code" repository.
+uses dummy (null) start and end nodes to simplify adding and removing nodes.

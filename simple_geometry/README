@@ -1,0 +1,3 @@
+Set of simple classes for simple geometry
+Each decends on each other in a heirachy:
+	s_polygon.h -> s_line.h -> s_point.h

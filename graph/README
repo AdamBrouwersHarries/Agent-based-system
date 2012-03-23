@@ -1,0 +1,7 @@
+A simple implementation of a "classical" simple, non directed (at the moment) graph.
+graph.h
+	-wrapper for an array of verticies, may soon contain functions for pathfinding and the like.
+vertex.h
+	-a single vertex/node in the graph, contains a linked list of adjacent nodes
+graph_tests.cpp
+	-a set of tests for the graph class
