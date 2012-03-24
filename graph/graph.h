@@ -7,6 +7,7 @@
 
 #include "../utility/storage_structures/linked_list/linkedlist.h"
 #include "vertex.h"
+#include "../voronoi_generator/VoronoiDiagramGenerator.cpp"
 
 #ifndef GRAPH_H
 #define	GRAPH_H
@@ -24,7 +25,7 @@ public:
 		void initialise(int width, int height)
 		{
 			delete[] verticies;
-			vertex_count = 10;
+			vertex_count = 30;
 			verticies = new vertex[vertex_count];
 			for(int i = 0;i<vertex_count;i++)
 			{
@@ -32,25 +33,15 @@ public:
 				verticies[i].location.y = (double)(rand()%height);			
 				verticies[i].id = i;
 			}
+			g_width = width;
+			g_height = height;
 		}
 		void connect() {
-			for(int i = 0;i<vertex_count;i++)
-			{
-				for(int j = i;j<vertex_count;j++)
-				{
-					if(i!=j)
-					{
-						vertex* a = &(verticies[i]);
-						vertex* b = &(verticies[j]);
-						a->adjacent.add_node(b);
-						b->adjacent.add_node(a);
-					}
-				}
-			}
 		}
 		vertex* verticies;
 		int vertex_count;
 private:
+		int g_width, g_height;
 };
 
 #endif	/* GRAPH_H */

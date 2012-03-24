@@ -10,7 +10,8 @@ public:
 		int restriction;
 
 		graph g;
-
+		vertex* highlighted;
+		vertex *connect_a, *connect_b;
 		ags_instance() {
 
 		}
@@ -37,11 +38,39 @@ public:
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				glColor4f(1.0, 1.0, 1.0, 1.0);
 				glLoadIdentity();
+				float mx = ih.GetSDLMousePosX();
+				float my = ih.GetSDLMousePosY();
+				for(int i = 0;i<g.vertex_count;i++)
+				{
+					vertex* cv = &(g.verticies[i]);
+					double dx = abs(cv->location.x-mx);
+					double dy = abs(cv->location.y-my);
+					if(dx<5 && dy <5)
+					{
+						highlighted = cv;
+					}
+				}
 				//RENDER
 				for(int i = 0;i<g.vertex_count;i++)
 				{
 					vertex* v = &(g.verticies[i]);
-					draw_square(v->location.x, v->location.y, 10);
+					if(v == highlighted)
+					{
+						double dx = abs(highlighted->location.x-mx);
+						double dy = abs(highlighted->location.y-my);
+						if(!(dx<10 && dy <10))
+						{
+							highlighted = NULL;
+						}
+						draw_square(v->location.x, v->location.y, 20);
+					}else if(v == connect_a || v == connect_b)
+					{
+						draw_square(v->location.x, v->location.y, 5);
+					}else{
+						draw_square(v->location.x, v->location.y, 10);
+					}
+					
+					glColor4f(1.0,1.0,1.0,0.1);
 					glBegin(GL_LINES);
 					for(llnode<vertex*>* iter=v->adjacent.dummy_start.next_ptr;iter!=&(v->adjacent.dummy_end);iter = iter->next_ptr)
 					{
@@ -49,9 +78,33 @@ public:
 						glVertex2d(iter->payload->location.x, iter->payload->location.y);
 					}
 					glEnd();
+					glColor4f(1.0, 1.0, 1.0, 1.0);
 				}
 				//ENDRENDER
 				SDL_GL_SwapBuffers();
+		}
+
+		void MouseDown(int button) {
+				//std::cout<<"Mouse "<<button<<" down\n";
+			if(connect_a != NULL && connect_b != NULL)
+			{
+				//both assigned, so connect them
+				if(connect_a != connect_b)
+				{
+					connect_a->adjacent.add_node(connect_b);
+					connect_b->adjacent.add_node(connect_a);
+				}
+				connect_a = NULL;
+				connect_b = NULL;
+				highlighted = NULL;
+			}else{
+				if(connect_a == NULL)
+				{
+					connect_a = highlighted;
+				}else{
+					connect_b = highlighted;
+				}
+			}
 		}
 private:
 
@@ -107,9 +160,7 @@ private:
 				//std::cout<<"Button "<<button<<" up\n\n";
 		}
 
-		void MouseDown(int button) {
-				//std::cout<<"Mouse "<<button<<" down\n";
-		}
+		
 
 		void MouseUp(int button) {
 				//std::cout<<"Mouse "<<button<<" up\n\n";

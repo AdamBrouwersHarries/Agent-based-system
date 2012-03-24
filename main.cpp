@@ -21,13 +21,14 @@ void input_callback_function(int button, int callbackType) {
 	switch (callbackType) {
 		case MOUSE_DOWN:
 			//call the game's mouse down function
+			test.MouseDown(button);
 			break;
 		case MOUSE_UP:
 			//call the game's mouse up function
 			break;
 		case BUTTON_DOWN:
 			//call the game's button down function
-			test.regen();
+			//test.regen();
 			break;
 		case BUTTON_UP:
 			//call the game's button up function

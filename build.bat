@@ -1,0 +1,1 @@
+g++ main.cpp -o ags_win -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32 -lwinmm -mwindows -Wall -ggdb
