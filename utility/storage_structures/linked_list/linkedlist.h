@@ -51,6 +51,20 @@ public:
 			delete rem_node;
 		}
 	}
+	//finds the llnode that contains this payload data, if it's not in the list it returns 0
+	llnode<payload_data>* find_node(payload_data search_payload)
+	{
+		llnode<payload_data> *iter = dummy_start.next_ptr;
+		while(iter!=&(dummy_end))
+		{
+			if(iter->payload == search_payload)
+			{
+				return iter;
+			}
+			iter = iter->next_ptr;
+		}
+		return NULL;
+	}
 	llnode<payload_data>* get_first()
 	{
 		if(is_empty() == false)

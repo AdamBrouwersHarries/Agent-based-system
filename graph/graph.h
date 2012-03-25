@@ -7,7 +7,7 @@
 
 #include "../utility/storage_structures/linked_list/linkedlist.h"
 #include "vertex.h"
-#include "../voronoi_generator/VoronoiDiagramGenerator.cpp"
+//#include "../voronoi_generator/VoronoiDiagramGenerator.cpp"
 
 #ifndef GRAPH_H
 #define	GRAPH_H
@@ -22,10 +22,10 @@ public:
 		virtual ~graph() {
 			delete[] verticies;
 		}
-		void initialise(int width, int height)
+		void initialise(int width, int height, int v_count)
 		{
 			delete[] verticies;
-			vertex_count = 30;
+			vertex_count = v_count;
 			verticies = new vertex[vertex_count];
 			for(int i = 0;i<vertex_count;i++)
 			{

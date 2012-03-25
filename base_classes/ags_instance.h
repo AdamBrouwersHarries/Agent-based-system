@@ -4,6 +4,7 @@
 #include "../utility/ogl_includes.h"
 #include "../utility/input_handler.h"
 #include "../graph/graph.h"
+#include "../agent/agent.h"
 class ags_instance {
 public:
 		int w_width, w_height;
@@ -12,6 +13,7 @@ public:
 		graph g;
 		vertex* highlighted;
 		vertex *connect_a, *connect_b;
+		agent agent_a;
 		ags_instance() {
 
 		}
@@ -29,8 +31,9 @@ public:
 		}
 
 		void regen() {
-			g.initialise(w_width, w_height);
+			g.initialise(w_width, w_height,10);
 			g.connect();
+			agent_a.current_node = &(g.verticies[0]);
 		}
 
 		void simulate(float dt, input_handler ih) {
@@ -80,6 +83,8 @@ public:
 					glEnd();
 					glColor4f(1.0, 1.0, 1.0, 1.0);
 				}
+				draw_square(agent_a.current_location.x, agent_a.current_location.y, 4);
+				agent_a.simulate();
 				//ENDRENDER
 				SDL_GL_SwapBuffers();
 		}
@@ -91,8 +96,15 @@ public:
 				//both assigned, so connect them
 				if(connect_a != connect_b)
 				{
-					connect_a->adjacent.add_node(connect_b);
-					connect_b->adjacent.add_node(connect_a);
+					if(connect_a->adjacent.find_node(connect_b) == NULL)
+					{
+						connect_a->adjacent.add_node(connect_b);
+					}
+					if(connect_b->adjacent.find_node(connect_a) == NULL)
+					{
+						connect_b->adjacent.add_node(connect_a);
+					}
+					agent_a.current_node = connect_b;
 				}
 				connect_a = NULL;
 				connect_b = NULL;
@@ -105,6 +117,10 @@ public:
 					connect_b = highlighted;
 				}
 			}
+		}
+		void ButtonDown(int button) {
+				//std::cout<<"Button "<<button<<" down\n";
+				agent_a.running = true;
 		}
 private:
 
@@ -152,9 +168,7 @@ private:
 				return 1;
 		}
 
-		void ButtonDown(int button) {
-				//std::cout<<"Button "<<button<<" down\n";
-		}
+		
 
 		void ButtonUp(int button) {
 				//std::cout<<"Button "<<button<<" up\n\n";

@@ -29,6 +29,7 @@ void input_callback_function(int button, int callbackType) {
 		case BUTTON_DOWN:
 			//call the game's button down function
 			//test.regen();
+			test.ButtonDown(button);
 			break;
 		case BUTTON_UP:
 			//call the game's button up function

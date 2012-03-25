@@ -22,6 +22,14 @@ public:
 		double diffy = ny-y;
 		return sqrt((diffx*diffx)+(diffy*diffy));
 	}
+	//uses manhatten distances to determine if the point is "near" another point
+	//essentially checks to see if both x and y difference are within a certain tolerance
+	bool m_is_near(s_point other, double tolerance)
+	{
+		double dx = abs(other.x-x);
+		double dy = abs(other.y-y);
+		return (dx<tolerance && dy<tolerance);
+	}
 	//equality operators
 	bool operator==(const s_point &other) const {
 		return (other.x==x)&&(other.y==y);
