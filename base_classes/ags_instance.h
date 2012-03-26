@@ -12,8 +12,8 @@ public:
 
 		graph g;
 		vertex* highlighted;
-		vertex *connect_a, *connect_b;
-		agent agent_a;
+		std::vector<vertex*> selected_verticies;
+		std::vector<agent> agents;
 		ags_instance() {
 
 		}
@@ -33,7 +33,12 @@ public:
 		void regen() {
 			g.initialise(w_width, w_height,10);
 			g.connect();
-			agent_a.current_node = &(g.verticies[0]);
+			for(int i = 0;i<g.vertex_count;i++)
+			{
+				agent new_agent;
+				new_agent.current_node = &(g.verticies[i]);
+				agents.push_back(new_agent);
+			}
 		}
 
 		void simulate(float dt, input_handler ih) {
@@ -54,6 +59,11 @@ public:
 					}
 				}
 				//RENDER
+				for(unsigned int i = 0;i<selected_verticies.size();i++)
+				{
+					vertex* iv = selected_verticies[i];
+					draw_square(iv->location.x, iv->location.y, 5);
+				}
 				for(int i = 0;i<g.vertex_count;i++)
 				{
 					vertex* v = &(g.verticies[i]);
@@ -66,9 +76,6 @@ public:
 							highlighted = NULL;
 						}
 						draw_square(v->location.x, v->location.y, 20);
-					}else if(v == connect_a || v == connect_b)
-					{
-						draw_square(v->location.x, v->location.y, 5);
 					}else{
 						draw_square(v->location.x, v->location.y, 10);
 					}
@@ -83,44 +90,99 @@ public:
 					glEnd();
 					glColor4f(1.0, 1.0, 1.0, 1.0);
 				}
-				draw_square(agent_a.current_location.x, agent_a.current_location.y, 4);
-				agent_a.simulate();
+				for(unsigned int i = 0;i<agents.size();i++)
+				{
+					agents[i].simulate();
+					agents[i].draw();
+				}
 				//ENDRENDER
 				SDL_GL_SwapBuffers();
+				if(ih.ButtonDown(SDLK_k))
+				{
+					agent new_agent;
+					new_agent.current_node = &(g.verticies[rand()%g.vertex_count]);
+					new_agent.running = agents[0].running;
+					agents.push_back(new_agent);
+				}
 		}
 
 		void MouseDown(int button) {
-				//std::cout<<"Mouse "<<button<<" down\n";
-			if(connect_a != NULL && connect_b != NULL)
+			//std::cout<<"Mouse "<<button<<" down\n";
+			if(highlighted!=NULL)
 			{
-				//both assigned, so connect them
-				if(connect_a != connect_b)
-				{
-					if(connect_a->adjacent.find_node(connect_b) == NULL)
-					{
-						connect_a->adjacent.add_node(connect_b);
-					}
-					if(connect_b->adjacent.find_node(connect_a) == NULL)
-					{
-						connect_b->adjacent.add_node(connect_a);
-					}
-					agent_a.current_node = connect_b;
-				}
-				connect_a = NULL;
-				connect_b = NULL;
-				highlighted = NULL;
-			}else{
-				if(connect_a == NULL)
-				{
-					connect_a = highlighted;
-				}else{
-					connect_b = highlighted;
-				}
+				selected_verticies.push_back(highlighted);
 			}
 		}
 		void ButtonDown(int button) {
 				//std::cout<<"Button "<<button<<" down\n";
-				agent_a.running = true;
+				switch(button)
+				{
+					case SDLK_c:
+					for(unsigned int i = 0;i<selected_verticies.size();i++)
+					{
+						vertex* ivertex = selected_verticies[i];
+						for(unsigned int j = i;j<selected_verticies.size();j++)
+						{
+							if(i!=j)
+							{
+								vertex* jvertex = selected_verticies[j];
+								if(ivertex->adjacent.find_node(jvertex) == NULL)
+								{
+									ivertex->adjacent.add_node(jvertex);
+								}
+								if(jvertex->adjacent.find_node(ivertex) == NULL)
+								{
+									jvertex->adjacent.add_node(ivertex);
+								}
+							}
+						}
+					}
+					selected_verticies.clear();
+					break;
+					case SDLK_x:
+					for(unsigned int i = 0;i<selected_verticies.size()-1;i++)
+					{
+						vertex* ivertex = selected_verticies[i];
+						vertex* jvertex = selected_verticies[i+1];
+						if(ivertex->adjacent.find_node(jvertex) == NULL)
+						{
+							ivertex->adjacent.add_node(jvertex);
+						}
+						if(jvertex->adjacent.find_node(ivertex) == NULL)
+						{
+							jvertex->adjacent.add_node(ivertex);
+						}
+					}
+					selected_verticies.clear();
+					break;
+					case SDLK_s:
+					for(unsigned int i = 0;i<agents.size();i++)
+					{
+						agents[i].running = !agents[i].running;
+					}
+					break;
+					case SDLK_d:
+					for(unsigned int i = 0;i<agents.size();i++)
+					{
+						agents[i].current_node = &(g.verticies[rand()%g.vertex_count]);
+						agents[i].find_new_target();
+					}
+					break;
+					case SDLK_e:
+					{
+						agent new_agent;
+						new_agent.current_node = &(g.verticies[rand()%g.vertex_count]);
+						new_agent.running = agents[0].running;
+						agents.push_back(new_agent);
+					}
+					break;
+					case SDLK_w:
+					if(agents.size()>0)
+					{
+						agents.pop_back();
+					}
+					break;
+				}
 		}
 private:
 
@@ -181,3 +243,4 @@ private:
 		}
 };
 #endif //AGS_INSTANCE_H
+

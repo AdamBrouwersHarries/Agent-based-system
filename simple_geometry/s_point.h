@@ -36,6 +36,19 @@ public:
 	}
 	bool operator!=(const s_point &other) const {
 		return !(*this == other);
-	}	
+	}
+	//aritmetic operators
+	s_point operator+(const s_point &other) const {
+		return s_point(x+other.x, y+other.y);		
+	}
+	s_point operator-(const s_point &other) const {
+		return s_point(x-other.x, y-other.y);
+	}
+	s_point operator/(const double &mag) const {
+		return s_point(x/mag, y/mag);
+	}
+	s_point operator*(const double &mag) const {
+		return s_point(x*mag, y*mag);
+	}
 };
 #endif //S_POINT_H

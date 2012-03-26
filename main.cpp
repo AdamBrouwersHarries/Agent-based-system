@@ -45,7 +45,7 @@ void ChangeTitle() {
 	currentTime = SDL_GetTicks();
 	float averageFps = 1000 * frames / currentTime;
 	std::stringstream cap;
-	cap << "Total frames" << frames << " total millis " << currentTime << " FPS:" << averageFps << " DT:" << dt << " AV DT:" << 1000 / averageFps;
+	cap << "Total frames" << frames << " total millis " << currentTime << " FPS:" << averageFps << " DT:" << dt << " AV DT:" << 1000 / averageFps<<" agents:"<<test.agents.size();
 	if (frames % 100 == 0) {
 		SDL_WM_SetCaption(cap.str().c_str(), NULL);
 		if (frames % 1000 == 0) {
@@ -61,6 +61,10 @@ void render_loop() {
 		userInput.PassEvent(ev);
 		test.simulate(dt, userInput);
 		dt = SDL_GetTicks() - currentTime;
+		while(dt<8)
+		{
+			dt = SDL_GetTicks() - currentTime;
+		}
 	}
 }
 
