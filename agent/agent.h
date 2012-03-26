@@ -59,13 +59,13 @@ public:
 			glColor4f(0.0,1.0,0.0,0.5);
 			//glVertex2f(current_location.x, current_location.y);
 			//glVertex2f(current_node->location.x, current_node->location.y);
-			glVertex2f(current_node->location.x, current_node->location.y);
+			/*glVertex2f(current_node->location.x, current_node->location.y);
 			for(unsigned int i = 0;i<future_locations.size();i++)
 			{
 				vertex* loc = future_locations[i];
 				glVertex2f(loc->location.x, loc->location.y);
 				glVertex2f(loc->location.x, loc->location.y);
-			}
+			}*/
 		glEnd();
 		glColor4f(1.0,1.0,1.0,1.0);
 	}

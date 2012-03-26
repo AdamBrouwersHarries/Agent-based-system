@@ -14,6 +14,7 @@ public:
 		vertex* highlighted;
 		std::vector<vertex*> selected_verticies;
 		std::vector<agent> agents;
+		bool draw_graph;
 		ags_instance() {
 
 		}
@@ -31,6 +32,7 @@ public:
 		}
 
 		void regen() {
+			draw_graph = true;
 			g.initialise(w_width, w_height,10);
 			g.connect();
 			for(int i = 0;i<g.vertex_count;i++)
@@ -59,36 +61,39 @@ public:
 					}
 				}
 				//RENDER
-				for(unsigned int i = 0;i<selected_verticies.size();i++)
+				if(draw_graph)
 				{
-					vertex* iv = selected_verticies[i];
-					draw_square(iv->location.x, iv->location.y, 5);
-				}
-				for(int i = 0;i<g.vertex_count;i++)
-				{
-					vertex* v = &(g.verticies[i]);
-					if(v == highlighted)
+					for(unsigned int i = 0;i<selected_verticies.size();i++)
 					{
-						double dx = abs(highlighted->location.x-mx);
-						double dy = abs(highlighted->location.y-my);
-						if(!(dx<10 && dy <10))
+						vertex* iv = selected_verticies[i];
+						draw_square(iv->location.x, iv->location.y, 5);
+					}
+					for(int i = 0;i<g.vertex_count;i++)
+					{
+						vertex* v = &(g.verticies[i]);
+						if(v == highlighted)
 						{
-							highlighted = NULL;
+							double dx = abs(highlighted->location.x-mx);
+							double dy = abs(highlighted->location.y-my);
+							if(!(dx<10 && dy <10))
+							{
+								highlighted = NULL;
+							}
+							draw_square(v->location.x, v->location.y, 20);
+						}else{
+							draw_square(v->location.x, v->location.y, 10);
 						}
-						draw_square(v->location.x, v->location.y, 20);
-					}else{
-						draw_square(v->location.x, v->location.y, 10);
+						
+						glColor4f(1.0,1.0,1.0,0.1);
+						glBegin(GL_LINES);
+						for(llnode<vertex*>* iter=v->adjacent.dummy_start.next_ptr;iter!=&(v->adjacent.dummy_end);iter = iter->next_ptr)
+						{
+							glVertex2f(v->location.x, v->location.y);
+							glVertex2d(iter->payload->location.x, iter->payload->location.y);
+						}
+						glEnd();
+						glColor4f(1.0, 1.0, 1.0, 1.0);
 					}
-					
-					glColor4f(1.0,1.0,1.0,0.1);
-					glBegin(GL_LINES);
-					for(llnode<vertex*>* iter=v->adjacent.dummy_start.next_ptr;iter!=&(v->adjacent.dummy_end);iter = iter->next_ptr)
-					{
-						glVertex2f(v->location.x, v->location.y);
-						glVertex2d(iter->payload->location.x, iter->payload->location.y);
-					}
-					glEnd();
-					glColor4f(1.0, 1.0, 1.0, 1.0);
 				}
 				for(unsigned int i = 0;i<agents.size();i++)
 				{
@@ -181,6 +186,9 @@ public:
 					{
 						agents.pop_back();
 					}
+					break;
+					case SDLK_z:
+						draw_graph = !draw_graph;
 					break;
 				}
 		}

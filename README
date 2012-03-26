@@ -1,1 +1,10 @@
 Practice at writing an agent based system, in c++
+Implemented so far:
+	-Graph classes + simple selection and manipulation of graph
+	-Simple agent behaviour
+
+TODO:
+	-More complex pathfinding
+	-ability to save graph/agent states
+	-more dynamic graphs, eg adding/removing nodes from graph
+	
